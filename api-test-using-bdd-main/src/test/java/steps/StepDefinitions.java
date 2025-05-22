@@ -1,10 +1,8 @@
 package steps;
 
-import com.aventstack.extentreports.Status;
-import com.example.auto.base.ApiService;
 import com.example.auto.util.Constants;
-import com.example.auto.util.ExtentTestManager;
-import com.example.auto.util.JsonReader;
+import com.example.auto.util.JsonRequestReader;
+import com.example.auto.util.JsonResponseReader;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -27,9 +25,9 @@ public class StepDefinitions {
     @Given("check api using GET")
     public void checkApiUsingGET() {
         System.out.println(Constants.BASE_URL + Constants.GET_LIST_USERS);
-         response = RestAssured
+        response = RestAssured
                 .given()
-                .header("x-api-key", "apiKey")
+                .header("x-api-key", "reqres-free-v1")
                 .get(Constants.BASE_URL + Constants.GET_LIST_USERS);
         System.out.println("Status Code: " + response.getStatusCode());
         System.out.println("Response Body: " + response.getBody().asPrettyString());
@@ -37,11 +35,11 @@ public class StepDefinitions {
 
     @When("create user using POST")
     public void createUserUsingPOST() {
-        response=RestAssured
-             .given()
-             .header("x-api-key", "reqres-free-v1")
-             .body(requestBody)
-             .post(Constants.BASE_URL + Constants.POST_LIST_USERS);
+        response = RestAssured
+                .given()
+                .header("x-api-key", "reqres-free-v1")
+                .body(requestBody)
+                .post(Constants.BASE_URL + Constants.POST_LIST_USERS);
         System.out.println(Constants.BASE_URL + Constants.POST_LIST_USERS);
         System.out.println("Status Code: " + response.getStatusCode());
         System.out.println("Response Body: " + response.getBody().asPrettyString());
@@ -54,6 +52,12 @@ public class StepDefinitions {
 
     @Given("user reads {string} from file")
     public void userReadsFromFile(String arg0) throws Exception {
-        requestBody= JsonReader.getRequestBody(arg0);
+        requestBody = JsonRequestReader.getRequestBody(arg0);
+    }
+
+    @And("validate the response")
+    public void validateTheResponse() {
+        JsonResponseReader.getResponseUsingJSONPath(response);
+       // JsonReader.getResponseJsonAndArrayBody(response);
     }
 }
